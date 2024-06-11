@@ -982,7 +982,7 @@ bool Game2048::canMove() {
 }
 void Game2048::AddPoint(int p) {
     currScore += p;
-    bWin = bWin || (p == 64);
+    bWin = bWin || (p == 2048);
 };
 
 
@@ -1755,7 +1755,6 @@ bool UserData::getNewUserData(HWND hWnd)
     }
     return true;
 }
-
 bool GameData::getNewGameData(HWND hWnd)
 {
     // Get from dialog
@@ -1767,7 +1766,6 @@ bool GameData::getNewGameData(HWND hWnd)
 
     return true;
 }
-
 PlayerData* PlayerData::CreateNewPlayer(int id, HWND hWnd)
 {
     PlayerData* player = new PlayerData;
@@ -1788,7 +1786,6 @@ PlayerData* PlayerData::CreateNewPlayer(int id, HWND hWnd)
     AddNewUser(filename, player);
     return player;
 }
-
 UserName* getUserFromDialog(HWND hWnd)
 {
     // Get from dialog
