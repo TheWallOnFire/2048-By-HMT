@@ -1,9 +1,6 @@
 #include "Defined.h"
 #include "Utils.h"
 #include "Library.h" // Include C++ library
-#include "framework.h" // Contain C library and windows.h
-
-
 
 
 // Open console

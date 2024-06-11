@@ -156,13 +156,11 @@
   <ItemGroup>
     <ClCompile Include="Source.cpp" />
     <ClCompile Include="Data.cpp" />
-    <ClCompile Include="Defined.cpp" />
     <ClCompile Include="Utils.cpp" />
     <ClCompile Include="Window.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="cpp.hint" />
-    <None Include="README.md" />
     <None Include="resource.hm" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

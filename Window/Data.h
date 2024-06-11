@@ -1,10 +1,7 @@
 #pragma once
 
-#include "Utils.h"
-#include "Defined.h"
-#include "Library.h" // Include C++ library
-#include "framework.h" // Contain C library and windows.h
-
+#include <windows.h>
+#include <iostream>
 
 // --------------Player Infomation ---------------------
 // Find user by name in Users.bin, return ID of that user,
@@ -18,7 +15,6 @@
 // -------------ID_0.bin -> store game data
 // -------------ID_1.bin -> store matrix data
 // -------------ID_2.bin ................................
-
 
 
 //------------------Point2D------------------------------------
@@ -359,8 +355,6 @@ public: // Function
     bool writeMat2048(std::string uID);
 };
 
-// When player not reach win condition then not save that game to userdata
-// Until player reach win condition then compare it with max value then save it
 class UserData
 {
 private:// Variable
@@ -409,7 +403,6 @@ public: // Function
     bool writeUserData(std::string id) const;
 };
 
-
 class PlayerData
 {
 private:
@@ -445,9 +438,11 @@ public: // Function
     GameData* getGame() const { return gData; };
     int getScore() const { return uData->getScore(); };
     int getSlot() const { return saveSlot; };
+    bool getPause() const{ return pauseGame; };
 
 
     bool setID(int id);
+    bool setPause(bool b) { pauseGame = b; return true; }
 
 
     bool readPlayerData(std::string id);
@@ -455,7 +450,6 @@ public: // Function
 };
 
 
-// Done
 class UserName
 {
 private: // Variable
@@ -483,7 +477,7 @@ public: // Function
     int getScore() const { return score; };
     std::time_t getTime() const { return time; };
     BOOL Convert(PlayerData* user);
-    BOOL Copy(UserName&);
+    BOOL CopyUser(UserName&);
 
     bool CheckUserValid();
     bool deleteThis();
@@ -499,26 +493,19 @@ public: // Function
 };
 
 
-
-// File: 
-// Resume.bin
-// Top20.bin
-UserName* getUserFromDialog(HWND hWnd);
+// External file
 List<UserName>* ReadUserData(std::string filename);
-BOOL SaveUserData(std::string filename, List<UserName>* list);
-BOOL RemoveDuplicate(List<UserName>* list);
-BOOL isUserDataRegistered(UserName* data, std::string filename);
-BOOL SaveUsers(std::string filename, UserName* username);
-BOOL DeleteSomeUsers(std::string filename, int size);
-BOOL DeleteUserByID(int id);
+bool SaveUserData(std::string filename, List<UserName>* list);
+bool RemoveDuplicate(List<UserName>* list);
+bool isUserDataRegistered(UserName* data, std::string filename);
+bool SaveUsers(std::string filename, UserName* username);
+bool DeleteSomeUsers(std::string filename, int size);
+bool DeleteUserByID(int id);
 int GetMaxScore();
-
-
+int FindRanking(PlayerData* player);
 List<UserName>* GetTop20(std::string filename = "Users/Top20.bin");
-BOOL AddTop20(std::string filename, UserData* us);
-BOOL AddNewUser(std::string filename, UserData* us, int id);
-BOOL AddNewUser(std::string filename, PlayerData* player);
-BOOL RegisterNewUser(std::string filename, UserData* us, int id);
-
-
+bool AddTop20(std::string filename, UserData* us);
+bool AddNewUser(std::string filename, UserData* us, int id);
+bool AddNewUser(std::string filename, PlayerData* player);
+bool RegisterNewUser(std::string filename, UserData* us, int id);
 

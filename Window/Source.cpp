@@ -5,6 +5,7 @@
 // Include header
 #include "Window.h"
 #include "Resource.h" // Contain data
+#include "Defined.h"
 
 
 // Global data

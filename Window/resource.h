@@ -42,7 +42,6 @@
 #define IDC_MAXSCORE                    1124
 #define IDC_MAIN_MENU                   1125
 #define IDC_TIME                        1125
-#define IDC_MAXSCORE2                   1126
 #define IDC_SCORE                       1127
 #define ID_GAME_DRAW                    32700
 #define ID_GAME_OVER                    32701
@@ -77,6 +76,8 @@
 #define ID_SETTING_STYLE                32813
 #define ID_SETTING_FONT                 32814
 #define ID_FILE_OPEN32821               32821
+#define ID_SETTING_MODE                 32822
+#define ID_SETTING_SIZE                 32823
 #define IDC_STATIC                      -1
 
 // Next default values for new objects
@@ -85,7 +86,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NO_MFC                     1
 #define _APS_NEXT_RESOURCE_VALUE        136
-#define _APS_NEXT_COMMAND_VALUE         32822
+#define _APS_NEXT_COMMAND_VALUE         32824
 #define _APS_NEXT_CONTROL_VALUE         1126
 #define _APS_NEXT_SYMED_VALUE           110
 #endif

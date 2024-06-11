@@ -1,6 +1,10 @@
+#include "Library.h" // Include C++ library
 #include "Data.h"
-#include "resource.h"
+#include "framework.h" // Contain C library and windows.h
 #include "Defined.h"
+#include "Utils.h"
+#include "Resource.h" // Contain data
+
 using namespace std;
 
 // ----------------------------Point 2D-------------------------------
@@ -978,7 +982,7 @@ bool Game2048::canMove() {
 }
 void Game2048::AddPoint(int p) {
     currScore += p;
-    bWin = bWin || (p == 2048);
+    bWin = bWin || (p == 64);
 };
 
 
@@ -1094,17 +1098,7 @@ bool GameData::writeMat2048(std::string id)
     return true;
 }
 
-bool GameData::getNewGameData(HWND hWnd)
-{
-    // Get from dialog
-    bLimit = IsDlgButtonChecked(hWnd, IDC_TIMER);
-    bMode = IsDlgButtonChecked(hWnd, IDC_EASYMODE);
-    wchar_t* sizer = new wchar_t[MAX_STR_SIZE];
-    GetDlgItemText(hWnd, IDC_SELSIZE, sizer, MAX_STR_SIZE);
-    size = std::stoi(sizer);
 
-    return true;
-}
 
 // User data struct..............................
 
@@ -1117,29 +1111,6 @@ bool UserData::AllocateNewGame()
 }
 
 
-bool UserData::getNewUserData(HWND hWnd)
-{
-    // Get from dialog
-    uName = new wchar_t[MAX_STR_SIZE];
-    GetDlgItemText(hWnd, IDC_USERNAME, uName, MAX_STR_SIZE);
-    trimWhitespace(uName);
-    uPass = new wchar_t[MAX_STR_SIZE];
-    GetDlgItemText(hWnd, IDC_PASSWORD, uPass, MAX_STR_SIZE);
-    trimWhitespace(uPass);
-    uLocate = new wchar_t[MAX_STR_SIZE];
-    GetDlgItemText(hWnd, IDC_LOCATION, uLocate, MAX_STR_SIZE);
-    uGender = IsDlgButtonChecked(hWnd, IDC_GENDER);
-    trimWhitespace(uLocate);
-
-    SYSTEMTIME st = { 0 }; HWND hDateTimePicker = {0};
-
-    hDateTimePicker = GetDlgItem(hWnd, IDC_BIRTHDAY);
-    if (SendMessage(hDateTimePicker, DTM_GETSYSTEMTIME, 0, (LPARAM)&st) == 0)
-    {
-        uBirth = SystTimeToTime(st);
-    }
-    return true;
-}
 bool UserData::setHighestScore(std::time_t completed, std::time_t played, int score)
 {
     if (score > uMaxP) {
@@ -1149,7 +1120,7 @@ bool UserData::setHighestScore(std::time_t completed, std::time_t played, int sc
         uCurr = false;
     }
     // Save to top20
-    AddTop20("Users/top20.bin", this);
+    AddTop20("Users/Top20.bin", this);
     return true;
 }
 
@@ -1263,26 +1234,6 @@ bool PlayerData::allocateData() {
     if (gData == NULL || uData == NULL) return false;
     return true;
 }
-PlayerData* PlayerData::CreateNewPlayer(int id, HWND hWnd)
-{
-    PlayerData* player = new PlayerData;
-    player->allocateData();
-    player->setID(id);
-
-    // Create data from HWND Dialog
-    player->getNewPlayerData(hWnd); // Just get data from dialog
-    player->CreateNewGameplay(); // Create new game
-
-    // Save to file
-    wchar_t* slot = new wchar_t[MAX_STR_SIZE];
-    GetDlgItemText(hWnd, IDC_SELPALLETE, slot, MAX_STR_SIZE);
-    player->saveSlot = std::stoi(slot);
-
-    std::string filename = std::string(FOLDER_USER) + "/" + std::string(FILE_USER)
-        + std::string(FILE_FORMAT);
-    AddNewUser(filename, player);
-    return player;
-}
 
 PlayerData* PlayerData::LoadOldPlayer(int id)
 {
@@ -1393,7 +1344,7 @@ BOOL UserName::Convert(PlayerData* user)
 
     return 0;
 }
-BOOL UserName::Copy(UserName& us)
+BOOL UserName::CopyUser(UserName& us)
 {
     this->ID = us.getID();
     this->uName = us.getName();
@@ -1456,30 +1407,6 @@ bool UserName::operator>=(UserName& other)
     return b;
 }
 
-
-
-
-
-
-UserName* getUserFromDialog(HWND hWnd)
-{
-    // Get from dialog
-    wchar_t* uName = new wchar_t[MAX_STR_SIZE];
-    GetDlgItemText(hWnd, IDC_USERNAME, uName, MAX_STR_SIZE);
-    wchar_t* uPass = new wchar_t[MAX_STR_SIZE];
-    GetDlgItemText(hWnd, IDC_PASSWORD, uPass, MAX_STR_SIZE);
-
-    // Trim str
-    UserName* us = new UserName;
-    us->setName(trimWhitespace(uName));
-    us->setPass(trimWhitespace(uPass));
-
-    return us;
-}
-
-
-
-
 // Function to read user data from binary file and store in a of structs
 List<UserName>* ReadUserData(std::string filename) {
     // Check open file
@@ -1532,7 +1459,7 @@ List<UserName>* ReadUserData(std::string filename) {
     return users;
 }
 
-BOOL SaveUserData(std::string filename, List<UserName>* list)
+bool SaveUserData(std::string filename, List<UserName>* list)
 {
     deleteFile(filename);
     Node<UserName>* temp = list->getHead();
@@ -1544,7 +1471,7 @@ BOOL SaveUserData(std::string filename, List<UserName>* list)
     return TRUE;
 }
 
-BOOL RemoveDuplicate(List<UserName>* list)
+bool RemoveDuplicate(List<UserName>* list)
 {
     Node<UserName>* node = list->getHead();
 
@@ -1566,7 +1493,7 @@ BOOL RemoveDuplicate(List<UserName>* list)
     return 0;
 }
 
-BOOL isUserDataRegistered(UserName* data, std::string filename)
+bool isUserDataRegistered(UserName* data, std::string filename)
 {
     if (data == NULL) return FALSE;
 
@@ -1601,7 +1528,7 @@ BOOL isUserDataRegistered(UserName* data, std::string filename)
 }
 
 // Save user to resume file
-BOOL SaveUsers(std::string filename, UserName* username)
+bool SaveUsers(std::string filename, UserName* username)
 {
     if (username == NULL) return FALSE;
 
@@ -1635,7 +1562,7 @@ BOOL SaveUsers(std::string filename, UserName* username)
 }
 
 // Delete first registered users until only a number of user remained
-BOOL DeleteSomeUsers(std::string filename, int size)
+bool DeleteSomeUsers(std::string filename, int size)
 {
     // Check and delete user file
     List<UserName>* users = ReadUserData(filename);
@@ -1650,7 +1577,7 @@ BOOL DeleteSomeUsers(std::string filename, int size)
     return 0;
 }
 
-BOOL DeleteUserByID(int id)
+bool DeleteUserByID(int id)
 {
     std::wstring filename = L"Data/" + IntToWideStr(id);
     deleteFolderContents(filename);
@@ -1671,6 +1598,17 @@ int GetMaxScore()
     return max;
 }
 
+int FindRanking(PlayerData* player)
+{
+    if (player == NULL)return -1;
+    List<UserName>* top20 = GetTop20();
+    if (top20 == NULL) return -1;
+    UserName* us = new UserName;
+    if (us == NULL)return -1;
+    us->Convert(player);
+    return top20->findByValue(us) + 1;
+}
+
 
 
 
@@ -1685,7 +1623,7 @@ List<UserName>* GetTop20(std::string filename)
 }
 
 // Save user to top20
-BOOL AddTop20(std::string filename, UserData* us)
+bool AddTop20(std::string filename, UserData* us)
 {
     if (us == NULL) return FALSE;
 
@@ -1703,7 +1641,7 @@ BOOL AddTop20(std::string filename, UserData* us)
                 // Find duplicate and decide to swap it or not
                 if (*head->pData < *tail->pData)
                 {
-                    head->pData->Copy(*tail->pData);
+                    head->pData->CopyUser(*tail->pData);
                 }
                 users->deleByIndex(users->getSize() - 1);
                 break;
@@ -1720,7 +1658,7 @@ BOOL AddTop20(std::string filename, UserData* us)
 }
 
 
-BOOL AddNewUser(std::string filename, UserData* us, int id)
+bool AddNewUser(std::string filename, UserData* us, int id)
 {
     if (us == NULL) return FALSE;
 
@@ -1759,7 +1697,7 @@ BOOL AddNewUser(std::string filename, UserData* us, int id)
     return TRUE;
 }
 
-BOOL AddNewUser(std::string filename, PlayerData* player)
+bool AddNewUser(std::string filename, PlayerData* player)
 {
     if (player == NULL) return FALSE;
 
@@ -1782,11 +1720,89 @@ BOOL AddNewUser(std::string filename, PlayerData* player)
     return TRUE;
 }
 
-BOOL RegisterNewUser(std::string filename, UserData* us, int id)
+bool RegisterNewUser(std::string filename, UserData* us, int id)
 {
     if (us == NULL) return FALSE;
     if (AddNewUser(filename, us, id)) DeleteSomeUsers(filename, 5);
     return TRUE;
+}
+
+
+
+
+
+
+bool UserData::getNewUserData(HWND hWnd)
+{
+    // Get from dialog
+    uName = new wchar_t[MAX_STR_SIZE];
+    GetDlgItemText(hWnd, IDC_USERNAME, uName, MAX_STR_SIZE);
+    trimWhitespace(uName);
+    uPass = new wchar_t[MAX_STR_SIZE];
+    GetDlgItemText(hWnd, IDC_PASSWORD, uPass, MAX_STR_SIZE);
+    trimWhitespace(uPass);
+    uLocate = new wchar_t[MAX_STR_SIZE];
+    GetDlgItemText(hWnd, IDC_LOCATION, uLocate, MAX_STR_SIZE);
+    uGender = IsDlgButtonChecked(hWnd, IDC_GENDER);
+    trimWhitespace(uLocate);
+
+    SYSTEMTIME st = { 0 }; HWND hDateTimePicker = { 0 };
+
+    hDateTimePicker = GetDlgItem(hWnd, IDC_BIRTHDAY);
+    if (SendMessage(hDateTimePicker, DTM_GETSYSTEMTIME, 0, (LPARAM)&st) == 0)
+    {
+        uBirth = SystTimeToTime(st);
+    }
+    return true;
+}
+
+bool GameData::getNewGameData(HWND hWnd)
+{
+    // Get from dialog
+    bLimit = IsDlgButtonChecked(hWnd, IDC_TIMER);
+    bMode = IsDlgButtonChecked(hWnd, IDC_EASYMODE);
+    wchar_t* sizer = new wchar_t[MAX_STR_SIZE];
+    GetDlgItemText(hWnd, IDC_SELSIZE, sizer, MAX_STR_SIZE);
+    size = std::stoi(sizer);
+
+    return true;
+}
+
+PlayerData* PlayerData::CreateNewPlayer(int id, HWND hWnd)
+{
+    PlayerData* player = new PlayerData;
+    player->allocateData();
+    player->setID(id);
+
+    // Create data from HWND Dialog
+    player->getNewPlayerData(hWnd); // Just get data from dialog
+    player->CreateNewGameplay(); // Create new game
+
+    // Save to file
+    wchar_t* slot = new wchar_t[MAX_STR_SIZE];
+    GetDlgItemText(hWnd, IDC_SELPALLETE, slot, MAX_STR_SIZE);
+    player->saveSlot = std::stoi(slot);
+
+    std::string filename = std::string(FOLDER_USER) + "/" + std::string(FILE_USER)
+        + std::string(FILE_FORMAT);
+    AddNewUser(filename, player);
+    return player;
+}
+
+UserName* getUserFromDialog(HWND hWnd)
+{
+    // Get from dialog
+    wchar_t* uName = new wchar_t[MAX_STR_SIZE];
+    GetDlgItemText(hWnd, IDC_USERNAME, uName, MAX_STR_SIZE);
+    wchar_t* uPass = new wchar_t[MAX_STR_SIZE];
+    GetDlgItemText(hWnd, IDC_PASSWORD, uPass, MAX_STR_SIZE);
+
+    // Trim str
+    UserName* us = new UserName;
+    us->setName(trimWhitespace(uName));
+    us->setPass(trimWhitespace(uPass));
+
+    return us;
 }
 
 

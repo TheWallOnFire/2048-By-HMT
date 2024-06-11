@@ -1,11 +1,7 @@
 #pragma once
 
-#pragma warning(push,3)
 #include <windows.h>
 #include <string>
-#pragma warning(pop)
-
-
 
 
 // Open console
@@ -14,14 +10,15 @@ void RedirectIOToConsole();
 bool CreateNewDirectory(const std::wstring& path);
 // Get Error
 std::string GetLastErrorAsString();
+
+
+
 // Delete folder
 bool deleteFolderContents(const std::wstring& path);
 bool deleteFolder(const std::wstring& path);
 bool deleteFile(const std::string& filePath);
 void deleteFilesFrom(int ID, int startNumber);
 bool GetOpenFilePath(WCHAR* filePath, const WCHAR* filter = L"All Files (*.*)\0*.*\0", HWND hwndParent = NULL);
-
-
 
 
 

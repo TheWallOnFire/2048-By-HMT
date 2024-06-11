@@ -2,6 +2,7 @@
 
 // === Include Directives ===
 #include "Data.h"
+#include "Utils.h"
 
 
 // === Constants ===
@@ -186,25 +187,26 @@ public: // Function
     BOOL CreateMyWindow() override;
 };
 
-
-
 /**
  * @brief Utility function
  */
 
+// Move matrix
+BOOL MoveMatrix(HWND hWnd, PlayerData* pGame);     
 
 // Open file dialog
 bool OpenFileDialog(HWND owner, LPWSTR fileName, DWORD fileNameSize);
 
 // Show text box
+BOOL ShowText_GameOver(HWND hWnd, LPCWSTR text);
 void ShowText_About(HWND hWnd);
 void ShowText_Information(HWND hWnd);
 void ShowText_Shortcut(HWND hWnd);
 
-
 // Layout of window
+UserName* getUserFromDialog(HWND hWnd);
+void AddItemToListbox(HWND hWnd, LPCWSTR item);
 BOOL CenterWindow(HWND hWnd);
 void DrawRectCentered(HDC hdc, RECT rect, const wchar_t* str, int total, COLORREF rectColor, COLORREF textColor);
 COLORREF generateColorRefFromIndex(int index, int x = 2);
 void DrawCell(HDC hdc, RECT cellRect, int value, COLORREF cellColor);
-wchar_t* FindLongestStr();

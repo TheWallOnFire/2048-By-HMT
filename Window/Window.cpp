@@ -4,8 +4,9 @@
 
 #include "Window.h"
 #include "Resource.h" // Contain data
-#include "framework.h" // Contain C library and windows.h
 #include "Library.h" // Include C++ library
+#include "Defined.h"
+
 
 
 
@@ -360,7 +361,7 @@ BOOL WindowMenu::GetCommand(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPara
     case ID_FILE_SAVE:
     {
         // Resave data
-        // MessageBox(NULL, L"Save data", L"Save File", MB_OK | MB_ICONINFORMATION);
+        MessageBox(NULL, L"Save data", L"Save File", MB_OK | MB_ICONINFORMATION);
         break;
     }
     case ID_FILE_DELETE: {
@@ -376,14 +377,16 @@ BOOL WindowMenu::GetCommand(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPara
 
     case ID_VIEW_PLAYER:
     {
-        // Show user data
+        // Show top 1 user data
         MessageBox(NULL, L"User data", L"User", MB_OK | MB_ICONINFORMATION);
         break;
     }
     case ID_VIEW_SCORE:
     {
         // Get max score
-        MessageBox(NULL, L"User data", L"User", MB_OK | MB_ICONINFORMATION);
+        int max = GetMaxScore();
+        LPCWSTR text = L"Max Score";
+        MessageBox(NULL, intToWideChar(max), text, MB_OK | MB_ICONINFORMATION);
         break;
     }
     case ID_VIEW_LEADERBOARD:
@@ -410,6 +413,11 @@ BOOL WindowMenu::GetCommand(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPara
         ShowText_About(hWnd);
         break;
     }
+
+    case ID_TOOL_RESET:
+    case ID_TOOL_UNDO:
+    case ID_TOOL_REDO:
+        MessageBox(NULL,L"Can't do this now",L"Abort!", MB_OK | MB_ICONASTERISK);
     default:
         return true;
     }
@@ -467,7 +475,6 @@ BOOL WindowGame::GetCommand(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 
     switch (wmId)
     {
-        // Help
     case ID_HELP_INFOMATION:
     {
         ShowText_Information(hWnd);
@@ -484,6 +491,7 @@ BOOL WindowGame::GetCommand(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
         ShowText_About(hWnd);
         break;
     }
+
     case ID_FILE_NEW: // Create new game , change size,...
     {
         // Save user data to this
@@ -514,12 +522,21 @@ BOOL WindowGame::GetCommand(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
         }
         break;
     }
+
     case ID_VIEW_PLAYER:
     {
         PlayerData* user = pGame;
         HWND hwndGoto = CreateDialogParamW(NULL, MAKEINTRESOURCE(IDD_USER), hWnd,
                             UserDialog, reinterpret_cast<LPARAM>(user));
         ShowWindow(hwndGoto, SW_SHOW);
+        break;
+    }
+    case ID_VIEW_SCORE:
+    {
+        // Get max score
+        int max = GetMaxScore();
+        LPCWSTR text = L"Max Score";
+        MessageBox(NULL, intToWideChar(max), text, MB_OK | MB_ICONINFORMATION);
         break;
     }
     case ID_VIEW_LEADERBOARD:
@@ -529,9 +546,6 @@ BOOL WindowGame::GetCommand(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
         break;
     }
 
-
-
-        // Tool
     case ID_TOOL_UNDO:
     {
         // BUG: after load game this not work properly
@@ -555,16 +569,29 @@ BOOL WindowGame::GetCommand(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 
     }
 
-    case ID_TOOL_RESET:
-        break;
     // File
     case ID_GAME_OVER:
     {
         pGame->GameOver();
-        if (MessageBoxW(hWnd, L"Game over!", L"Notification", MB_RETRYCANCEL) == IDRETRY)
+
+        List<UserName>* users = GetTop20();
+        int score = pGame->getGame()->getMatrix()->getScore();
+        int rank = FindRanking(pGame);
+        if (rank < 1 || rank > 20) rank = 20;
+
+        std::wstringstream wss;
+        wss << L"Game over\nYour score: " << score << L"\nYour rank: " << rank;
+
+        std::wstring wstr = wss.str();
+        LPCWSTR text = wstr.c_str();
+        if (ShowText_GameOver(hWnd, text) == IDRETRY)
+        {
+            // Start new game
             SendMessageW(this->GetHWND(), WM_COMMAND, ID_FILE_NEW, 0);
+        }
         else
         {
+            // Delete user
             SendMessageW(this->GetHWND(), WM_CLOSE, 0, 0);
             DeleteUserByID(pGame->getID());
         }
@@ -589,8 +616,6 @@ BOOL WindowGame::GetCommand(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
         RECT clientRect;
         GetClientRect(hWnd, &clientRect);
         HDC hdc = GetDC(hWnd);
-
-
         int padding = clientRect.bottom/6;
 
         // Bottom box
@@ -630,12 +655,7 @@ BOOL WindowGame::GetKeyDown(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPara
     {
         if (game->MoveMatrixLeft())
         {
-            SendMessageW(this->GetHWND(), WM_COMMAND, IDC_AUTOPLAY, 0);
-            if (game->getWinCondition())
-                if (MessageBoxW(hWnd, L"You win!\nContinue?", L"Win!!!", MB_OKCANCEL) == IDCANCEL)
-                {
-                    SendMessageW(this->GetHWND(), WM_COMMAND, ID_GAME_OVER, 0);
-                }
+            MoveMatrix(this->GetHWND(), pGame);
         }
         else return SendMessageW(this->GetHWND(), WM_COMMAND, ID_GAME_OVER, 0);
         break;
@@ -645,13 +665,7 @@ BOOL WindowGame::GetKeyDown(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPara
     {
         if (game->MoveMatrixRight())
         {
-            SendMessageW(this->GetHWND(), WM_COMMAND, IDC_AUTOPLAY, 0);
-            if (game->getWinCondition())
-
-                if (MessageBoxW(hWnd, L"You win!\nContinue?", L"Win!!!", MB_OKCANCEL) == IDCANCEL)
-                {
-                    SendMessageW(this->GetHWND(), WM_COMMAND, ID_GAME_OVER, 0);
-                }
+            MoveMatrix(this->GetHWND(), pGame);
         }
         else return SendMessageW(this->GetHWND(), WM_COMMAND, ID_GAME_OVER, 0);
         break;
@@ -661,12 +675,7 @@ BOOL WindowGame::GetKeyDown(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPara
     {
         if (game->MoveMatrixUp())
         {
-            SendMessageW(this->GetHWND(), WM_COMMAND, IDC_AUTOPLAY, 0);
-            if (game->getWinCondition())
-                if (MessageBoxW(hWnd, L"You win!\nContinue?", L"Win!!!", MB_OKCANCEL) == IDCANCEL)
-                {
-                    SendMessageW(this->GetHWND(), WM_COMMAND, ID_GAME_OVER, 0);
-                }
+            MoveMatrix(this->GetHWND(), pGame);
         }
         else return SendMessageW(this->GetHWND(), WM_COMMAND, ID_GAME_OVER, 0);
         break;
@@ -676,17 +685,11 @@ BOOL WindowGame::GetKeyDown(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPara
     {
         if (game->MoveMatrixDown())
         {
-            SendMessageW(this->GetHWND(), WM_COMMAND, IDC_AUTOPLAY, 0);
-            if (game->getWinCondition())
-                if (MessageBoxW(hWnd, L"You win!\nContinue?", L"Win!!!", MB_OKCANCEL) == IDCANCEL)
-                {
-                    SendMessageW(this->GetHWND(), WM_COMMAND, ID_GAME_OVER, 0);
-                }
+            MoveMatrix(this->GetHWND(), pGame);
         }
         else return SendMessageW(this->GetHWND(), WM_COMMAND, ID_GAME_OVER, 0);
         break;
     }
-
     case 'I': // Information
     {
         SendMessageW(this->GetHWND(), WM_COMMAND, ID_VIEW_PLAYER, 0);
@@ -694,7 +697,8 @@ BOOL WindowGame::GetKeyDown(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPara
     }
     case 'E':
     {
-        SendMessageW(this->GetHWND(), WM_CLOSE, 0, 0);
+        if(pGame->getPause() == true)
+            SendMessageW(this->GetHWND(), WM_CLOSE, 0, 0);
         break;
     }
 
@@ -900,7 +904,7 @@ LRESULT CALLBACK LeaderboardDialog(HWND hWnd, UINT message, WPARAM wParam, LPARA
     case WM_INITDIALOG:
     {
         CenterWindow(hWnd);
-        std::string filename = "Users/top20.bin";
+        std::string filename = "Users/Top20.bin";
 
         // Load data
         List<UserName>* users = GetTop20(filename);
@@ -1051,7 +1055,7 @@ LRESULT CALLBACK NewGameDialog(HWND hWnd, UINT message, WPARAM wParam, LPARAM lP
             // Check data is not empty str and not registered (TRUE AND FALSE)
             UserName* us = getUserFromDialog(hWnd);
             // Get list of user
-            std::string filename = "Users/top20.bin";            
+            std::string filename = "Users/Top20.bin";            
             int ID = isUserDataRegistered(us, filename);
             bool check = us->CheckUserValid() && !(ID);
             delete us;
@@ -1124,6 +1128,21 @@ new_thread:
 
 
 
+BOOL MoveMatrix(HWND hWnd, PlayerData* pGame)
+{
+    Game2048* game = pGame->getGame()->getMatrix();
+    SendMessageW(hWnd, WM_COMMAND, IDC_AUTOPLAY, 0);
+    if (game->getWinCondition() && !pGame->getPause())
+    {
+        pGame->setPause(true);
+        if (MessageBoxW(hWnd, L"You win!\nContinue?", L"Win!!!", MB_OKCANCEL) == IDCANCEL)
+        {
+            SendMessageW(hWnd, WM_COMMAND, ID_GAME_OVER, 0);
+        }
+    }
+    return 0;
+}
+
 // Open file dialog
 bool OpenFileDialog(HWND hWnd, LPWSTR filename, DWORD fileNameSize) {
     OPENFILENAMEW ofn;       // Common dialog box structure for wide characters
@@ -1144,28 +1163,39 @@ bool OpenFileDialog(HWND hWnd, LPWSTR filename, DWORD fileNameSize) {
 }
 
 // Show text box
-
+BOOL ShowText_GameOver(HWND hWnd, LPCWSTR text)
+{
+    LPCWSTR name;
+    name = L"Game over";
+    return MessageBoxW(hWnd, text, name, MB_RETRYCANCEL);
+}
 void ShowText_About(HWND hWnd)
 {
     LPCWSTR text, name;
-    text = L"This game is made by Huynh Manh Tuong";
+    text = L"This game is made by Huynh Manh Tuong.\n"
+           L"1/6/2024 - 10/6/2024";
     name = L"About";
     MessageBoxW(hWnd, text, name, MB_OK);
 }
 void ShowText_Information(HWND hWnd)
 {
     LPCWSTR text, name;
-    text = L"This is a 2048 for window";
+    text = L"This is a simple 2048 for window\n";
     name = L"Information";
     MessageBoxW(hWnd, text, name, MB_OK);
 }
 void ShowText_Shortcut(HWND hWnd)
 {
     LPCWSTR text, name;
-    text = L"Press button to play";
+    text = L"Press 'ASDW' or ARROW KEYS to move matrix\n"
+        L"Press 'U' to undo matrix\n"
+        L"Press 'R' to redo matrix\n"
+        L"Press 'E' to exit game after win\n"
+        L"Press 'I' to show stat\n";
     name = L"Shortcut";
     MessageBoxW(hWnd, text, name, MB_OK);
 }
+
 // Center window
 void AddItemToListbox(HWND hWnd, LPCWSTR item)
 {
@@ -1188,8 +1218,6 @@ BOOL CenterWindow(HWND hWnd) {
     }
     return FALSE;
 }
-
-
 void DrawRectCentered(HDC hdc, RECT rect, const wchar_t* str, int total, COLORREF rectColor, COLORREF textColor) {
     // Draw filled rectangle
     HBRUSH hRectBrush = CreateSolidBrush(rectColor);
