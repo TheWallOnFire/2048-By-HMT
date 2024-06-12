@@ -1,37 +1,30 @@
 # 2048 for Window
 
-One Paragraph of the project description (TODO: upload a image)
+## Description
+This is my version of the legendary game 2048, you can read more about it from [here](https://en.wikipedia.org/wiki/2048_(video_game))
+This version of mine is available on WINDOW only, utilizing <windows.h> Library and its functions
+Main language: C++
+Version: 1.0.0
 
-## Getting Started
-
-These instructions will give you a copy of the project up and running on
-your local machine for development and testing purposes. See deployment
-for notes on deploying the project on a live system.
-
-### Prerequisites
-
-### Installing
-
-## Running the tests
-
-### Sample Tests
-
-## Deployment
-
-## Built With
+## Table of Contents (Optional)
+- [Feature](#features)
+- [Installation](#installation)
+- [Test](#tests)
 
 
-## Contributing
+## Features
 
-
-## Versioning
-
-- Currnent ver: 1.0.0.0
-
-## Authors
-
-  - **Huynh Manh Tuong** - *Owner of this project* -
-
-## License
-- None
+- Game 2048 on window platform.
+- Has friendly GUI.
+- Support multiple game at the same time.
+- Saving data to slot for future play.
+- Show leaderboard and top players.
+- Has tutorial
   
+## Installation
+
+
+
+## Tests
+
+
