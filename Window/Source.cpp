@@ -37,7 +37,7 @@ int APIENTRY WinMain(
     // ===============================
     // Section: Setting the game
     // ===============================
-    RedirectIOToConsole();
+    // RedirectIOToConsole();
     CreateNewDirectory(FOLDER_USER_W);
     CreateNewDirectory(FOLDER_DATA_W);
     // listOfUser->getListFromFile();

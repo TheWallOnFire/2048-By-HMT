@@ -931,7 +931,7 @@ bool Game2048::SpawnNewCell()
     cout << "-------Create cell in index " << index << " that has value " << value << "\n";
     return true;
 }
-void Game2048::MergeTwoCells(Point2D* p1, Point2D* p2)
+int Game2048::MergeTwoCells(Point2D* p1, Point2D* p2)
 { // Add p1 to p2
     getPtr()[int(p2->getX())][int(p2->getY())]
         += getPtr()[int(p1->getX())][int(p1->getY())];
@@ -941,6 +941,7 @@ void Game2048::MergeTwoCells(Point2D* p1, Point2D* p2)
 
     checkMerge = true;
     cout << "Merge cell " << *p1 << " and " << *p2 << "\n";
+    return getPtr()[int(p2->getX())][int(p2->getY())];
 }
 void Game2048::AddToEmptyCell(Point2D*& p)
 {

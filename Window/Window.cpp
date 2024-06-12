@@ -535,7 +535,7 @@ BOOL WindowGame::GetCommand(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
     {
         // Get max score
         int max = GetMaxScore();
-        LPCWSTR text = L"Max Score";
+        LPCWSTR text = L"Top 1 score";
         MessageBox(NULL, intToWideChar(max), text, MB_OK | MB_ICONINFORMATION);
         break;
     }
@@ -941,13 +941,13 @@ LRESULT CALLBACK LeaderboardDialog(HWND hWnd, UINT message, WPARAM wParam, LPARA
 
             // Three wchar_t* strings
             const wchar_t* data1 = us->getName();
-            const wchar_t* data2 = timeToWideChar(us->getTime());
+            const wchar_t* data2 = intToWideChar(us->getTime() / 100);
             const wchar_t* data3 = intToWideChar(us->getScore());
 
             // Combine the three strings into a single wide string
             std::wstring rowData = IntToWideStr(num) + L"\t" + std::wstring(data1) +
                 std::wstring(nameWidth - wcslen(data1), L' ') + L"\t" +
-                std::wstring(data2) + L"\t" + std::wstring(data3);
+                std::wstring(data2) + L"s\t\t\t" + std::wstring(data3);
             const wchar_t* rowDataPtr = rowData.c_str();
 
             SendDlgItemMessage(hWnd, IDC_LEADERBOARD, LB_ADDSTRING, 0, (LPARAM)rowDataPtr);
@@ -1173,15 +1173,26 @@ void ShowText_About(HWND hWnd)
 {
     LPCWSTR text, name;
     text = L"This game is made by Huynh Manh Tuong.\n"
-           L"1/6/2024 - 10/6/2024";
+        L"Github: TheWallOnFire\n"
+        L"Using C++ and Window API to create UI and game\n"
+        L"Time: 1/6/2024 - 12/6/2024";
     name = L"About";
     MessageBoxW(hWnd, text, name, MB_OK);
 }
 void ShowText_Information(HWND hWnd)
 {
     LPCWSTR text, name;
-    text = L"This is a simple 2048 for window\n";
-    name = L"Information";
+    text = L"\n"
+        L"Click File > New game to create a new user and choose the setting of the game\n"
+        L"Click File > Load game to load a saved game\n"
+        L"Click File > Delete to delete all user data\n"
+
+        L"Click View > Player to show infomation about current player \n"
+        L"Click View > Score to show information of the highest score \n"
+        L"Click View > Leaderboard you can see the ranking of the top 20 player \n"
+
+        L"\n";
+    name = L"How to play:";
     MessageBoxW(hWnd, text, name, MB_OK);
 }
 void ShowText_Shortcut(HWND hWnd)

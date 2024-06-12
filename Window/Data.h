@@ -287,7 +287,7 @@ private:
     
     // Game mechanic
     bool SpawnNewCell();
-    void MergeTwoCells(Point2D*, Point2D*); // Merge cell 2 into cell 1
+    int MergeTwoCells(Point2D*, Point2D*); // Merge cell 2 into cell 1
 
     void AddToEmptyCell(Point2D*&); // Add empty node
     void RemoveFromEmptyCell(Point2D*); // Remove empty node
@@ -392,7 +392,7 @@ public: // Function
     wchar_t* getPass() const { return uPass; };
     wchar_t* getLocation() const { return uLocate; };
     int getScore() const { return uMaxP; };
-    std::time_t getTime() const { return uTime; };
+    std::time_t getTime() const { return uPlayed; };
     std::time_t getBirth() const { return uBirth; };
 
     // Set value

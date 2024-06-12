@@ -22,6 +22,10 @@
 #define FILE_USER_W  L"Users"
 #define FILE_FORMAT_W L".bin"
 
+// Define file
+#define FILE_RESUME_DATA "Users/Users.bin"
+#define FILE_LEADERBOARD_DATA "Users/Top20.bin"
+
 // Define RBG color
 #define COLOR_WHITE RGB(255, 255, 255)
 #define COLOR_BLACK RGB(0, 0, 0)
