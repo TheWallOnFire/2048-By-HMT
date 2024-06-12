@@ -1,14 +1,13 @@
 # 2048 for Window
 
-## Table of Contents (Optional)
+## Table of Contents
 - [Introduction](#introduction)
 - [Features](#features)
 - [Configuration](#configuration)
-- [Contributing](#contributing)
+- [Uses](#uses)
 - [License](#license)
-- [Contact](#contact)
-- [Screenshot](#screenshot)
-
+- [Screenshot](#screenshots)
+- [Ratings](#ratings)
 
 ## Introduction
 
@@ -66,12 +65,13 @@ Make sure you set to these option before build the project.
 This folder is for testing the app that I used when making this project.
 If you want to test the project use this part and create your test cases.
 
-## Contributing
+## 
 ## License
-## Contact
+This project is licensed under the [MIT License](LICENSE).
 
-## Screenshot
-## Rating
+## Screenshots
+
+## Ratings
 
 | Chức năng                                                                                 | Điểm |
 |-------------------------------------------------------------------------------------------|------|
