@@ -39,10 +39,26 @@ Setup guide: Open Properties of this Folder, on top of Dialog, select All Config
 Make sure you set to these option before build the project
 - On the menu above, select Release and x64
 - Press F7 to build project and press F5 to run it
+  
 3. Unit Test
+This folder is for testing the app that I used when making this project.
 
-
-
+| Chức năng                                                                                 | Điểm |
+|-------------------------------------------------------------------------------------------|------|
+| Hiển thị được giao diện kèm chức năng của hai màn hình chính                               | 0.1  |
+| Thực hiện được chức năng nhập tên và kiểm tra tính trùng lắp                              | 0.1  |
+| Thực hiện được chức năng cài đặt độ lớn của bàn cờ                                        | 0.1  |
+| Thực hiện được việc lưu trữ thông tin người chơi                                          | 0.1  |
+| Thực hiện được chức năng Resume                                                           | 0.2  |
+| Thực hiện được chức năng Exit                                                             | 0.1  |
+| Thực hiện được logic trong trò chơi như phát sinh ngẫu nhiên, di chuyển, hiển thị trò chơi, hiển thị điểm, v.v | 1.0  |
+| Thực hiện được chức năng undo, undo và redo                                               | 0.2  |
+| Hiển thị các thông báo và nội dung tương ứng                                              | 0.1  |
+| Tổ chức thành các file rõ ràng                                                            | 0.2  |
+| Có sử dụng phương thức đồ hoạ kèm giao diện thân thiện                                    | 0.2  |
+| Cài đặt được cách thức mã hoá tệp tin                                                     | 0.2  |
+| Cài đặt được chức năng Resume cho năm tài khoản                                           | 0.4  |
 ## Tests
 
+## Screenshot
 
