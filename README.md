@@ -18,46 +18,46 @@ Version: 1.0.0 (12/6/2024)
 
 ## Features
 These are some features of the app:
-- Game 2048 on window platform.  
-- Has friendly GUI.  
-- Support multiple game at the same time.  
-- Saving data to slot for future play.  
-- Show leaderboard and top players.  
-- Has tutorial.
+- Run on Window platform.
+- Has a friendly, modern GUI compared to the ASCII version.
+- Support multiple games at the same time.
+- Saving data to 5 slots for resuming in the future.
+- Show leaderboard and top 20 players.
+- Support multiple languages.
 
 ### Prerequisites
-- Microsoft Visual Studio, any version is fine.
-- Make sure to download the package: Desktop development with C++.
-- Have C++14 in your machine.
+- Download any version of Microsoft Visual Studio.
+- Download the package: Desktop development with C++.
+- Download C++14 on your machine (this usually comes with Visual Studio).
   
 ### Installation
-1. Get a copy of the project locally (via github or download ZIP).
-2. Navigate to the main folder: There are total 3 project on the solution: Console, Window and Test2048.
-3. Build and run the Window project, the other two can be let alone.
+1. Get a copy of the project locally (via GitHub or download ZIP).
+2. Navigate to the main folder: There are 3 projects on the solution: Console, Window, and Test2048.
+3. Build and run the Window project, the other two can be left alone.
 
 ## Configuration
 1. Console folder
 This folder is used for debugging code.
-Build this folder if you want to play game using terminal.
-Keep the basic configuration for C++ project
+Build and run this folder if you want to use the terminal.
+Keep the basic configuration for the C++ project
 
-3. Window folder
-Main game that inherits from Console folder, with <windows.h> library to create game UI.
+2. Window folder
+The main game that inherits from the Console, with <windows.h> library to create game UI.
 
 ### Setup guide: 
-Begin with open Properties Dialog by rigtclick on the project:
+Begin with Set Startup Project and open Properties Dialog by right click on the project:
 
 - On top of Dialog, select All Configurations and All Platforms.
-You can change this if you want the Debug and Release Configurations seperate.
+You can change this if you want the Debug and Release Configurations separate.
 
-- On Configuartion Property > General > Configuration Type: select Application (.exe).
+- On Configuration Property > General > Configuration Type: select Application (.exe).
 
 - On Configuartion Property > General > C++ Language Standard: select C++ 14.
 
 - On Configuartion Property > Advanced > Character Set: select Unicode.
 The app uses UNICODE for display text so the Character set must be Unicode.
 
-Make sure you set to these option before build the project.
+Make sure you set to these options before building the project.
 - On the menu above, select Release and x64.
 - Press F7 to build project and press F5 to run it.
   
