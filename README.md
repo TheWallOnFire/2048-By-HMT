@@ -19,14 +19,14 @@ Version: 1.0.0 (12/6/2024)
 ## Features
 These are some features of the app:
 - Run on Window platform.
-- Has a friendly, modern GUI compared to the ASCII version.
+- Has a friendly, modern GUI.
 - Support multiple games at the same time.
 - Saving data to 5 slots for resuming in the future.
 - Show leaderboard and top 20 players.
-- Support multiple languages.
+- Using UNICODE character set instead of ASCII set.
 
 ### Prerequisites
-- Download any version of Microsoft Visual Studio.
+- Download Microsoft Visual Studio using version 2022.
 - Download the package: Desktop development with C++.
 - Download C++14 on your machine (this usually comes with Visual Studio).
   
@@ -60,16 +60,13 @@ The app uses UNICODE for display text so the Character set must be Unicode.
 Make sure you set to these options before building the project.
 - On the menu above, select Release and x64.
 - Press F7 to build project and press F5 to run it.
-  
-3. Unit Test
-This folder is for testing the app that I used when making this project.
-If you want to test the project use this part and create your test cases.
 
-## 
 ## License
 This project is licensed under the [MIT License](LICENSE).
 
 ## Screenshots
+Here is the [link](https://drive.google.com/drive/folders/1-LT1vTy5leWVvDbmZCV2kdO8woZh3bEi)
+to screenshots and testting videos
 
 ## Ratings
 
